@@ -41,6 +41,14 @@ PLACE_COLORS = {
 
 CAFE_KEYWORDS = ["cafe", "tea", "coffee", "drink", "bakery", "bread", "dessert"]
 
+CRIME_COLORS = {
+    "Assault":        "#e45756",
+    "Auto Theft":     "#72b7b2",
+    "Break and Enter":"#f58518",
+    "Robbery":        "#b279a2",
+    "Theft Over":     "#54a24b",
+}
+
 
 # ============================================================
 # Data Loading (cached)
@@ -109,7 +117,7 @@ show_libraries = st.sidebar.checkbox("Libraries", value=True)
 
 # --- Amenities ---
 st.sidebar.subheader("Amenities")
-wifi_only = st.sidebar.checkbox("Places near free public wifi")
+wifi_only = st.sidebar.checkbox("Places Near Free Public Wifi")
 
 # --- Cost ---
 cost_filter = st.sidebar.radio("Cost", ["All", "Free Only", "Paid Only"])
@@ -195,7 +203,6 @@ if selected_campus not in ("All Toronto",):
 # ============================================================
 st.title("Third Places for Students in Toronto")
 st.caption("Interactive map of parks, cafes, and libraries for university students")
-st.markdown("*A STA313 Group Project Demo*")
 
 col1, col2, col3, col4 = st.columns(4)
 col1.markdown(
@@ -388,7 +395,7 @@ if hood:
             color="MCI_CATEGORY",
             title=f"Crime in {hood['name']} ({year_range[0]}–{year_range[1]})",
             labels={"MCI_CATEGORY": "Crime Category", "count": "Incident Count"},
-            color_discrete_sequence=px.colors.qualitative.Pastel,
+            color_discrete_map=CRIME_COLORS,
         )
         fig_hood.update_layout(showlegend=False, xaxis_tickangle=-25, height=350)
         st.plotly_chart(fig_hood, use_container_width=True)
@@ -435,7 +442,7 @@ if len(crime_agg) > 0:
         color="MCI_CATEGORY",
         title=chart_title,
         labels={"MCI_CATEGORY": "Crime Category", "count": "Incident Count"},
-        color_discrete_sequence=px.colors.qualitative.Set2,
+        color_discrete_map=CRIME_COLORS,
     )
     fig.update_layout(showlegend=False, xaxis_tickangle=-30, height=400)
     st.plotly_chart(fig, use_container_width=True)

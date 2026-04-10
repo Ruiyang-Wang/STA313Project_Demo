@@ -403,52 +403,6 @@ if hood:
         st.info(f"No crime data recorded for {hood['name']} in this period.")
 
 
-# ============================================================
-# Crime Bar Chart (city / campus level)
-# ============================================================
-st.markdown("---")
-st.subheader("Crime Statistics")
-
-crime_filtered = crime_df[
-    (crime_df["OCC_YEAR"] >= year_range[0]) &
-    (crime_df["OCC_YEAR"] <= year_range[1])
-]
-
-if selected_campus in UNIVERSITIES:
-    zone_map = get_neighbourhood_zone_map()
-    crime_filtered = crime_filtered[
-        crime_filtered["HOOD_158"].apply(normalize_hood).map(zone_map) == selected_campus
-    ]
-elif selected_campus == "All Campus":
-    zone_map = get_neighbourhood_zone_map()
-    crime_filtered = crime_filtered[
-        crime_filtered["HOOD_158"].apply(normalize_hood).map(zone_map) != "Other"
-    ]
-
-crime_agg = (
-    crime_filtered.groupby("MCI_CATEGORY")["count"]
-    .sum()
-    .reset_index()
-    .sort_values("count", ascending=False)
-)
-
-if len(crime_agg) > 0:
-    area_label = selected_campus if selected_campus != "All Toronto" else "Toronto"
-    chart_title = f"Crime Incidents in {area_label} ({year_range[0]}–{year_range[1]})"
-    fig = px.bar(
-        crime_agg,
-        x="MCI_CATEGORY",
-        y="count",
-        color="MCI_CATEGORY",
-        title=chart_title,
-        labels={"MCI_CATEGORY": "Crime Category", "count": "Incident Count"},
-        color_discrete_map=CRIME_COLORS,
-    )
-    fig.update_layout(showlegend=False, xaxis_tickangle=-30, height=400)
-    st.plotly_chart(fig, use_container_width=True)
-else:
-    st.info("No crime data available for the selected filters.")
-
 
 # ============================================================
 # Footer
